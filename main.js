@@ -1,11 +1,10 @@
 var p1 = require('./p1.js')();
-var p2 = require('./p2.js')();
+var p2 = require('./p2.js');
+var p3 = require('./p3.js');
 
-console.log(p1, p2)
+console.log(p1, p2, p3)
 
-p1.then(function(val) {
-  console.log(val); // 1
-  return val + 2;
-}).then(p2).then(function(val) {
-  console.log(val);
-})
+p1
+.then(p2)
+.then(p3)
+.then((result) => { console.log("Result: " + result); }).catch(function(err) { console.error('crapastic:' + err); });
