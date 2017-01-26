@@ -9,4 +9,5 @@ p1()
 .then(p2)
 .then(p3)
 .then(p4)
-.then((result) => { console.log("Result: " + result); }).catch(function(err) { console.error('crapastic:' + err); });
+.then((result) => { console.log("Result: " + result); })
+.catch(function(err) { console.error('crapastic:' + err); })
