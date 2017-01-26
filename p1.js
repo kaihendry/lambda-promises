@@ -1,1 +1,1 @@
-module.exports = function () { return new Promise(function(resolve, reject) { resolve(1); }); }
+module.exports = () => { return Promise.resolve(1) };
