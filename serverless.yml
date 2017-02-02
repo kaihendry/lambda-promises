@@ -1,0 +1,9 @@
+service: promises
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+
+functions:
+  promise:
+    handler: handler.promise
