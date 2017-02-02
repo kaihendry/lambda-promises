@@ -11,11 +11,6 @@ const dynamodb = new aws.DynamoDB.DocumentClient();
 
 module.exports.promise = (event, context, callback) => {
 
-	// http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#scan-property
-	dynamodb.scan({ TableName: process.env.TABLE }).promise()
-		.then((data) => { console.log("After scan", data); })
-		.catch(function(err) { console.error('Failed to scan:' + err); })
-
 	const uuidgen = uuid.v4()
 	const randomNumber = Math.random()
 
@@ -24,12 +19,12 @@ module.exports.promise = (event, context, callback) => {
 	dynamodb.update(params).promise()
 		.then((data) => { console.log("After update", data);
 			assert(uuidgen, data.Attributes.uuid)
-			dynamodb.get({ TableName: process.env.TABLE, Key: { uuid: uuidgen }}).promise()
-				.then((data) => { console.log("After get", data);
-					assert(uuidgen, data.Item.uuid);
-					return callback(null, { message: data })
-				})
-				.catch((err) => { console.error('Failed to get:' + err); })
+			return dynamodb.get({ TableName: process.env.TABLE, Key: { uuid: uuidgen }}).promise()
 		})
+		.then((data) => { console.log("After get", data);
+			assert(uuidgen, data.Item.uuid);
+			return callback(null, { message: data })
+		})
+		.catch((err) => { console.error('Failed to get:' + err); })
 
 };
