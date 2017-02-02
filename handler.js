@@ -16,7 +16,7 @@ module.exports.promise = (event, context, callback) => {
 
 	const params = { TableName: process.env.TABLE, ReturnValues: "ALL_NEW", Key: { uuid: uuidgen }, AttributeUpdates: { randomNumber: { Action: 'PUT', Value: randomNumber }}}
 
-	dynamodb.update(params).promise()
+	return dynamodb.update(params).promise()
 		.then((data) => { console.log("After update", data);
 			assert(uuidgen, data.Attributes.uuid)
 			return dynamodb.get({ TableName: process.env.TABLE, Key: { uuid: uuidgen }}).promise()
@@ -25,6 +25,6 @@ module.exports.promise = (event, context, callback) => {
 			assert(uuidgen, data.Item.uuid);
 			return callback(null, { message: data })
 		})
-		.catch((err) => { console.error('Failed to get:' + err); })
+		.catch((err) => { return callback(err) })
 
 };
