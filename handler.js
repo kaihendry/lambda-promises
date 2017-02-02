@@ -23,8 +23,9 @@ module.exports.promise = (event, context, callback) => {
 		})
 		.then((data) => { console.log("After get", data);
 			assert(uuidgen, data.Item.uuid);
-			return callback(null, { message: data })
+			return { message: data }
 		})
-		.catch((err) => { return callback(err) })
+		.catch((err) => { throw err })
+	.then((data) => { callback(null, data) })
 
 };
