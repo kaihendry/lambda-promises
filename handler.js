@@ -22,7 +22,10 @@ module.exports.promise = (event, context, callback) => {
 	const params = { TableName: process.env.TABLE, ReturnValues: "ALL_NEW", Key: { uuid: uuidgen }, AttributeUpdates: { randomNumber: { Action: 'PUT', Value: randomNumber }}}
 	dynamodb.update(params, (err, data) => {
 		if (err) console.log(err);
-		else console.log("Update CB", data)
+		else {
+			console.log("Update CB", data)
+			assert(uuidgen, data.Attributes.uuid)
+		}
 		});
 
 	dynamodb.update(params).promise()
