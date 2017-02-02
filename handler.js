@@ -9,23 +9,22 @@ aws.config.update({
 console.log('AWS version', aws.VERSION)
 const dynamodb = new aws.DynamoDB.DocumentClient();
 
-module.exports.promise = (event, context, callback) => {
+module.exports.promised = (event, context, callback) => {
 	const uuidgen = uuid.v4()
 	const randomNumber = Math.random()
 
 	const params = { TableName: process.env.TABLE, ReturnValues: 'ALL_NEW', Key: { uuid: uuidgen }, AttributeUpdates: { randomNumber: { Action: 'PUT', Value: randomNumber } } }
 
 	return dynamodb.update(params).promise()
-		.then((data) => {
-			console.log('After update', data);
-			assert(uuidgen, data.Attributes.uuid)
-			return dynamodb.get({ TableName: process.env.TABLE, Key: { uuid: uuidgen } }).promise()
-		})
-		.then((data) => {
-			console.log('After get', data);
-			assert("FAILZONE" + uuidgen, data.Item.uuid);
-			console.log("Why doesn't it b0rk here at failed assertion", "FAILZONE" + uuidgen, data.Item.uuid)
-			return { message: data }
-		})
-	.then((data) => { callback(null, data) })
+	.then((data) => {
+		console.log('After update', data);
+		assert.equal(uuidgen, data.Attributes.uuid)
+		return dynamodb.get({ TableName: process.env.TABLE, Key: { uuid: uuidgen } }).promise()
+	})
+	.then((data) => {
+		console.log('After get', data);
+		assert.equal(uuidgen, data.Item.uuid);
+		return data
+	})
+	.then((data) => { callback(null, { message: data }) })
 };

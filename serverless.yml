@@ -20,8 +20,8 @@ provider:
       Resource: "arn:aws:dynamodb:${self:provider.region}:*:*"
 
 functions:
-  promise:
-    handler: handler.promise
+  promisetest:
+    handler: handler.promised
     environment:
       TABLE: "${self:custom.dynamoDBTableName}"
 
