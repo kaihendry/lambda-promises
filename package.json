@@ -3,17 +3,18 @@
   "author": "Kai Hendry <hendry@iki.fi>",
   "private": true,
   "scripts": {
-    "lint": "eslint --ext .js .",
+    "lint": "standard",
     "testr": "serverless invoke -f promisetest",
     "test": "serverless invoke local -f promisetest",
     "deploy": "serverless deploy",
+    "deployfast": "serverless deploy -f promisetest",
     "logs": "sls logs -f promisetest"
   },
   "dependencies": {
     "aws-sdk": "^2.9.0",
-    "eslint": "^3.14.1",
-    "eslint-config-airbnb-base": "^11.0.1",
-    "eslint-plugin-import": "^2.2.0",
     "node-uuid": "^1.4.7"
+  },
+  "devDependencies": {
+    "standard": "^8.6.0"
   }
 }
