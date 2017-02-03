@@ -23,7 +23,7 @@ module.exports.promised = (event, context, callback) => {
   })
   .then((data) => {
     console.log('After get', data)
-    assert.equal(uuidgen, data.Item.uuid + 'omg')
+    assert.equal(uuidgen, data.Item.uuid)
     callback(null, { message: data })
   }).catch((error) => { callback(error) })
 }
