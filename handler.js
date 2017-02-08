@@ -7,6 +7,8 @@ aws.config.update({
   region: 'ap-southeast-1'
 })
 
+function get (uuid) { return dynamodb.get({ TableName: process.env.TABLE, Key: { uuid: uuid } }).promise() }
+
 console.log('AWS version', aws.VERSION)
 const dynamodb = new aws.DynamoDB.DocumentClient()
 
@@ -28,8 +30,8 @@ module.exports.promised = (event, context, callback) => {
       console.log('Doing an update', data)
       assert.equal(uuidgen, data.Attributes.uuid)
       console.log('uuid', uuidgen)
-    }).then(() => { return dynamodb.get({ TableName: process.env.TABLE, Key: { uuid: uuidgen } }).promise() })
-    : dynamodb.get({ TableName: process.env.TABLE, Key: { uuid: uuidgen } }).promise()
+    }).then(() => { return get(uuidgen) })
+    : get(uuidgen)
   )
   .then((data) => {
     console.log('Done a get', data)
