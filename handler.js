@@ -1,3 +1,4 @@
+// vim: set sw=2 sts=2 expandtab:
 const aws = require('aws-sdk')
 const uuid = require('node-uuid')
 const assert = require('assert')
