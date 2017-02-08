@@ -24,12 +24,12 @@ module.exports.promised = (event, context, callback) => {
     } }
 
   return (
-    event ? dynamodb.update(params).promise().then((data) => {
+    !event ? dynamodb.update(params).promise().then((data) => {
       console.log('Doing an update', data)
       assert.equal(uuidgen, data.Attributes.uuid)
       console.log('uuid', uuidgen)
-    }).then(dynamodb.get({ TableName: process.env.TABLE, Key: { uuid: '980a157d-05e5-4f7f-b6af-00392d12ce56'} }).promise()) // <-- this promise is returning undefined!!
-    : dynamodb.get({ TableName: process.env.TABLE, Key: { uuid: '980a157d-05e5-4f7f-b6af-00392d12ce56' } }).promise()
+    }).then(() => { return dynamodb.get({ TableName: process.env.TABLE, Key: { uuid: uuidgen } }).promise() })
+    : dynamodb.get({ TableName: process.env.TABLE, Key: { uuid: uuidgen } }).promise()
   )
   .then((data) => {
     console.log('Done a get', data)
