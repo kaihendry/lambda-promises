@@ -7,14 +7,10 @@ aws.config.update({
   region: 'ap-southeast-1'
 })
 
-function get (uuid) { return dynamodb.get({ TableName: process.env.TABLE, Key: { uuid: uuid } }).promise() }
-
 console.log('AWS version', aws.VERSION)
 const dynamodb = new aws.DynamoDB.DocumentClient()
 
 module.exports.promised = (event, context, callback) => {
-  console.log('event', event)
-
   const uuidgen = uuid.v4()
   const randomNumber = Math.random()
 
@@ -26,17 +22,20 @@ module.exports.promised = (event, context, callback) => {
     } }
 
   return (
-    !event ? dynamodb.update(params).promise().then((data) => {
-      console.log('Doing an update', data)
-      assert.equal(uuidgen, data.Attributes.uuid)
-      console.log('uuid', uuidgen)
-    }).then(() => { return get(uuidgen) })
-    : get(uuidgen)
+      event ? update().then(get) : get()
   )
-  .then((data) => {
-    console.log('Done a get', data)
-    // HALP? Assert only if we did an update earlier
-    // assert.equal(uuidgen, data.Item.uuid)
-    callback(null, { message: data })
-  }).catch((error) => { callback(error) })
+  .then(data => callback(null, data), callback)
+
+  function get () {
+    return dynamodb.get({ TableName: process.env.TABLE, Key: { uuid: uuidgen } }).promise()
+  }
+
+  function update () {
+    return dynamodb.update(params).promise()
+      .then(data => {
+        console.log('Doing an update', data)
+        assert.equal(uuidgen, data.Attributes.uuid, 'uuid does not match')
+        console.log('uuid', uuidgen)
+      })
+  }
 }
